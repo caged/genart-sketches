@@ -1,0 +1,17 @@
+{
+  "name": "example-sketch",
+  "version": "0.0.1",
+  "description": "Testing out example-sketch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "canvas-sketch"
+  ],
+  "author": "Justin Palmer",
+  "license": "ISC",
+  "devDependencies": {
+    "canvas-sketch-cli": "^1.0.15"
+  }
+}
