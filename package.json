@@ -12,9 +12,11 @@
   "author": "Justin Palmer",
   "license": "ISC",
   "devDependencies": {
-    "canvas-sketch-cli": "^1.0.15"
+    "canvas-sketch-cli": "^1.0.15",
+    "eslint": "^5.3.0",
+    "eslint-plugin-github": "^1.2.1"
   },
   "dependencies": {
-    "canvas-sketch": "0.0.16"
+    "canvas-sketch": "0.0.17"
   }
 }
