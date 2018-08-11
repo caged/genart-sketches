@@ -13,5 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "canvas-sketch-cli": "^1.0.15"
+  },
+  "dependencies": {
+    "canvas-sketch": "0.0.16"
   }
 }
