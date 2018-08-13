@@ -8,7 +8,7 @@ const settings = {
   exportPixelRatio: 2
 }
 
-const sketch = () => {
+canvasSketch(() => {
   return ({context: ctx, width, height}) => {
     const rings = 25
     width -= rings * 2
@@ -30,6 +30,4 @@ const sketch = () => {
       ctx.stroke()
     }
   }
-}
-
-canvasSketch(sketch, settings)
+}, settings)
