@@ -3,6 +3,7 @@ const palettes = require('nice-color-palettes/100.json')
 const shuffle = require('shuffle-array')
 const {scaleBand} = require('d3-scale')
 const {range} = require('d3-array')
+const seedrandom = require('seedrandom')
 
 const settings = {
   dimensions: [1000, 1000],
@@ -12,6 +13,11 @@ const settings = {
 
 canvasSketch(() => {
   return ({context: ctx, width, height}) => {
+    const seed = Date.now()
+    /* eslint-disable-next-line */
+    console.log(`Generating with seed ${seed}`)
+
+    const rng = seedrandom(seed)
     const xys = Math.ceil(Math.sqrt(palettes.length))
     const y = scaleBand()
       .domain(range(0, xys))
@@ -35,6 +41,7 @@ canvasSketch(() => {
         // cellWidth -= rings * 2
         const step = Math.floor(cellWidth / 2 / rings)
         const colors = shuffle.pick(palettes)
+        const colors = shuffle.pick(palettes, {rng})
         let pick = -1
 
         ctx.lineWidth = step * 0.5
