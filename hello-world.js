@@ -22,16 +22,12 @@ const sketch = () => {
 
     for (let i = 1; i <= rings; i++) {
       const size = width - step * i * 2
-      const x = step * i + rings
-      const y = step * i + rings
+      const x = step * i
+      const y = step * i
       ctx.strokeStyle = colors[(pick = ++pick >= colors.length ? 0 : pick)]
-      ctx.save()
       ctx.beginPath()
-      ctx.translate(x + width / 2, y + height / 2)
-      ctx.rotate((5 * Math.PI) / 180)
-      ctx.rect(-width / 2, -height / 2, size, size)
+      ctx.rect(x, y, size, size)
       ctx.stroke()
-      ctx.restore()
     }
   }
 }
