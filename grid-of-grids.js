@@ -4,6 +4,7 @@ const shuffle = require('shuffle-array')
 const {scaleBand} = require('d3-scale')
 const {range} = require('d3-array')
 const seedrandom = require('seedrandom')
+const {shaky} = require('./vendor/shaky')
 
 const settings = {
   dimensions: 'A4',
@@ -16,7 +17,7 @@ canvasSketch(() => {
     const seed = Date.now()
     /* eslint-disable-next-line */
     console.log(`Generating with seed ${seed}`)
-
+    const sctx = shaky.create(ctx.canvas)
     const rng = seedrandom(seed)
     const xys = Math.ceil(Math.sqrt(palettes.length))
     const y = scaleBand()
@@ -24,7 +25,6 @@ canvasSketch(() => {
       .range([0, height])
       .padding(0.0, 0.0)
       .round(true)
-
     const x = scaleBand()
       .domain(range(0, palettes.length / xys))
       .range([0, width])
@@ -34,6 +34,8 @@ canvasSketch(() => {
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, width, height)
 
+    let j = 1
+    shaky.shake = j
     for (const yv of y.domain()) {
       for (const xv of x.domain()) {
         const cellWidth = x.bandwidth()
@@ -52,16 +54,18 @@ canvasSketch(() => {
           const rx = x(xv) + step * i
           const ry = y(yv) + step * i
           ctx.strokeStyle = colors[(pick = ++pick >= colors.length ? 0 : pick)]
-          ctx.beginPath()
-          ctx.rect(rx, ry, xsize, ysize)
-          ctx.stroke()
+          sctx.beginPath()
+          sctx.rect(rx, ry, xsize, ysize)
+          sctx.stroke()
         }
+        ++j
 
         // ctx.strokeStyle = '#333'
         // ctx.lineWidth = 1
-        // ctx.beginPath()
-        // ctx.rect(x(xv), y(yv), x.bandwidth(), y.bandwidth())
-        // ctx.stroke()
+        //
+        // sctx.beginPath()
+        // sctx.rect(x(xv), y(yv), x.bandwidth(), y.bandwidth())
+        // sctx.stroke()
       }
     }
   }
