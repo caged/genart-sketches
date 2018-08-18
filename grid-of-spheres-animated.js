@@ -15,10 +15,6 @@ const settings = {
 
 const CELL_COUNT = 12
 
-const debug = document.createElement('div')
-debug.style.cssText = 'position: absolute; top: 10px; right: 10px;font-family:monospace'
-document.body.appendChild(debug)
-
 canvasSketch(() => {
   const palettes = palette(10)
   const pcolors = palettes.random()
