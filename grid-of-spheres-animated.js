@@ -32,19 +32,17 @@ canvasSketch(() => {
   const eclipseColor = lineColor.brighter(0.2)
   const shadowColor = lineColor.darker()
 
+  eclipseColor.opacity = 0.5
+  shadowColor.opacity = 0.5
+
   return ({context: ctx, width, height, time}) => {
     ctx.clearRect(0, 0, width, height)
-
-    projection.translate([width / 2, height / 2])
     path.context(ctx)
-
-    const rotation = Math.sin(time * Math.PI) * 90
-    eclipseColor.opacity = 0.5
-    shadowColor.opacity = 0.5
-
     ctx.lineWidth = 0
     ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, width, height)
+
+    const rotation = Math.sin(time * Math.PI) * 90
 
     for (const {x, y, xsize, ysize, i} of grid(CELL_COUNT, width, height)) {
       const radius = Math.floor(Math.min(xsize, ysize) / 2)
@@ -62,7 +60,7 @@ canvasSketch(() => {
       ctx.fillStyle = shadowColor
       ctx.fillStyle = ctx.ellipse(
         x + xsize / 2,
-        y + ysize / 2 + radius * 0.82,
+        y + ysize / 2 + radius * 0.8,
         radius * 0.2,
         radius * 0.01,
         0,
@@ -80,7 +78,6 @@ canvasSketch(() => {
       ctx.beginPath()
       path({type: 'Sphere'})
       ctx.strokeStyle = lineColor.darker()
-
       ctx.lineWidth = 1
       ctx.stroke()
     }
