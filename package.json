@@ -24,6 +24,7 @@
     "d3-scale": "^2.1.0",
     "d3-scale-chromatic": "^1.3.0",
     "lerp": "^1.0.3",
+    "lindenmayer": "^1.5.0",
     "nice-color-palettes": "^2.0.0",
     "seedrandom": "^2.4.3",
     "shuffle-array": "^1.0.1"
