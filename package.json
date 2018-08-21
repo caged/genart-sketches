@@ -26,6 +26,7 @@
     "lerp": "^1.0.3",
     "lindenmayer": "^1.5.0",
     "nice-color-palettes": "^2.0.0",
+    "noised": "git+https://github.com/Caged/noisejs.git#npm",
     "seedrandom": "^2.4.3",
     "shuffle-array": "^1.0.1"
   }
