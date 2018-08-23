@@ -6,7 +6,7 @@ const {range} = require('d3-array')
 const seedrandom = require('seedrandom')
 
 const settings = {
-  // dimensions: 'A4',
+  dimensions: 'A4',
   pixelRatio: devicePixelRatio,
   exportPixelRatio: devicePixelRatio
 }
