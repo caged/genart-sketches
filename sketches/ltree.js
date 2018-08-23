@@ -1,7 +1,7 @@
 const canvasSketch = require('canvas-sketch')
 const LSystem = require('lindenmayer')
 const shuffle = require('shuffle-array')
-const {palette} = require('./utils/palette')
+const {palette} = require('../utils/palette')
 
 const settings = {
   dimensions: 'A3',

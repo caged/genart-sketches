@@ -2,8 +2,8 @@ const canvasSketch = require('canvas-sketch')
 const d3g = require('d3-geo')
 const d3c = require('d3-color')
 const shuffle = require('shuffle-array')
-const {grid} = require('./utils/grid')
-const {palette} = require('./utils/palette')
+const {grid} = require('../utils/grid')
+const {palette} = require('../utils/palette')
 
 const settings = {
   dimensions: 'A4',

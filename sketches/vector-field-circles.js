@@ -2,7 +2,7 @@ const canvasSketch = require('canvas-sketch')
 const {noise} = require('noised')
 const {scaleLinear, scaleQuantile} = require('d3-scale')
 const shuffle = require('shuffle-array')
-const {palette} = require('./utils/palette')
+const {palette} = require('../utils/palette')
 
 const settings = {
   dimensions: [250, 250],
