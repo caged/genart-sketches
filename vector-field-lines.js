@@ -26,7 +26,7 @@ const sketch = ({width, height}) => {
     }
   }
 
-  return ({context: ctx, width, height, frame, time}) => {
+  return ({context: ctx, width, height, time}) => {
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, width, height)
 
