@@ -28,6 +28,7 @@
     "nice-color-palettes": "^2.0.0",
     "noised": "git+https://github.com/Caged/noisejs.git#npm",
     "seedrandom": "^2.4.3",
-    "shuffle-array": "^1.0.1"
+    "shuffle-array": "^1.0.1",
+    "three": "^0.95.0"
   }
 }
