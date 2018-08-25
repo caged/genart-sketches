@@ -79,7 +79,7 @@ const sketch = ({context, width, height}) => {
 
   const geometry = new THREE.SphereGeometry(SPHERE_SIZE, 32, 32)
   const material = new THREE.MeshPhongMaterial({shininess: 5})
-  const landMesh = new THREE.Mesh(geometry, material)
+  landMesh = new THREE.Mesh(geometry, material)
 
   material.specular = new THREE.Color(0xafd9ff)
   material.bumpScale = 0.05
