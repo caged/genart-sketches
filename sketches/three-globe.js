@@ -45,17 +45,17 @@ const sketch = ({context, width, height}) => {
 
   directionalLight.castShadow = true
   const scamera = directionalLight.shadow.camera
-  scamera.near = 0.1
-  scamera.far = 15
-  scamera.fov = 45
+  scamera.near = camera.near
+  scamera.far = camera.near
+  scamera.fov = camera.fov
   scamera.left = -1
   scamera.right = 1
   scamera.top = 1
   scamera.bottom = -1
   directionalLight.shadow.bias = 0.001
   directionalLight.shadow.darkness = 0.2
-  directionalLight.shadow.mapSize.width = width
-  directionalLight.shadow.mapSize.height = height
+  directionalLight.shadow.mapSize.width = 512
+  directionalLight.shadow.mapSize.height = 512
 
   // const helper = new THREE.CameraHelper(light.shadow.camera)
   // scene.add(helper)
