@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+find $@ -name '*.png' -exec pngquant --ext .png --force {} \;
+npx canvas-sketch-gif $@
