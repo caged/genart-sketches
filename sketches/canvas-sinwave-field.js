@@ -1,13 +1,21 @@
 const canvasSketch = require('canvas-sketch')
 const {lerp} = require('../utils/lerp')
+const shuffle = require('shuffle-array')
+const {palette} = require('../utils/palette')
+
 const settings = {
   dimensions: [1000, 1000],
   animate: true,
-  pixelRatio: devicePixelRatio
-  // dimensions: [2048, 2048]
+  pixelRatio: devicePixelRatio,
+  exportPixelRatio: 1
 }
 
-const frequency = 4
+const frequency = 5
+const palettes = palette(10)
+const pcolors = palettes.random()
+const baseColor = shuffle.pick(pcolors)
+const colors = pcolors.filter(c => c !== baseColor)
+const fill = shuffle.pick(colors)
 
 const sketch = ({width, height}) => {
   const radius = 6
@@ -31,18 +39,18 @@ const sketch = ({width, height}) => {
   }
 
   return ({context, width, height, time}) => {
-    context.fillStyle = '#000000'
+    context.fillStyle = baseColor
     context.fillRect(0, 0, width, height)
-    context.fillStyle = '#afffff'
+    context.fillStyle = fill
     for (const [i, p] of points.entries()) {
       let r = ((Math.sin(time * frequency + p.z) + 1) / 2) * (radius - 2 * radius) + radius
       r = lerp(1, r, p.z / rows)
 
-      // const x = ((Math.sin(time * frequency + i) + 1) / 2) * (20 - 2 * r) + r
+      const x = 0 //((Math.sin(time * frequency + i) + 1) / 2) * (20 - 2 * r) + r
       const y = ((Math.sin(time * frequency + i) + 1) / 2) * (20 - 2 * r) + r
 
       context.beginPath()
-      context.arc(p.x, p.y + y, r, 0, Math.PI * 2)
+      context.arc(p.x + x, p.y + y, r, 0, Math.PI * 2)
       context.fill()
     }
   }
