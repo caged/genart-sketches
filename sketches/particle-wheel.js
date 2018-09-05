@@ -15,7 +15,7 @@ const settings = {
   attributes: {antialias: false} // Turn on MSAA
 }
 
-const frequency = 0.2
+const frequency = 0.0001
 
 const sketch = ({context, width, height}) => {
   const renderer = new THREE.WebGLRenderer({context})
@@ -26,9 +26,6 @@ const sketch = ({context, width, height}) => {
   renderer.setClearColor(0x181825)
   camera.position.set(0, 0, 100)
   camera.lookAt(0, 0, 0)
-
-  // const axesHelper = new THREE.AxesHelper(1000)
-  // scene.add(axesHelper)
 
   const ambientLight = new THREE.AmbientLight(0x999999)
   scene.add(ambientLight)
@@ -46,7 +43,7 @@ const sketch = ({context, width, height}) => {
   scene.add(moonGroup)
 
   const positions = []
-  const numMoons = 10
+  const numMoons = 25
   const coreRadius = coreGeom.parameters.radius
   const offsetRadius = coreRadius * 10
 
@@ -77,7 +74,7 @@ const sketch = ({context, width, height}) => {
   scene.add(animGroup)
   // positions = positions.slice()
 
-  const range = 1
+  const range = 10
   for (const {startPosition, endPosition, angle} of positions) {
     const distance = startPosition.distanceTo(endPosition)
     const cPoint = endPosition.clone()
@@ -88,8 +85,8 @@ const sketch = ({context, width, height}) => {
       new THREE.Vector3(cPoint.x, cPoint.y, 3)
     )
     const controlRange1 = new THREE.Box3(
-      new THREE.Vector3(cPoint.x - range, cPoint.y - distance / 2, -3),
-      new THREE.Vector3(cPoint.x + range, cPoint.y + distance, 3)
+      new THREE.Vector3(cPoint.x - range, cPoint.y - distance / 2, -range),
+      new THREE.Vector3(cPoint.x + range, cPoint.y + distance, range)
     )
 
     const animation = new ParticlePath({
@@ -102,7 +99,7 @@ const sketch = ({context, width, height}) => {
     animation.animate(20.0, {ease: Power0.easeIn, repeat: -1})
     animGroup.add(animation)
     // console.log(scene)
-    animation.debug(scene)
+    // animation.debug(scene)
   }
 
   return {
@@ -115,6 +112,10 @@ const sketch = ({context, width, height}) => {
     },
     // Render each frame
     render({time}) {
+      const {x, y, z} = camera.position
+      camera.position.x = x * Math.cos(time * frequency) + z * Math.sin(time * frequency)
+      camera.position.z = z * Math.cos(time * frequency) - x * Math.sin(time * frequency)
+      // camera.position.y = y * Math.cos(time * frequency) - x * Math.sin(time * frequency)
       // for (const [i, moon] of moonGroup.children.entries()) {
       //   const angle = (i / (numMoons / 2)) * Math.PI
       //
