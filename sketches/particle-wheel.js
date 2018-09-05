@@ -1,9 +1,8 @@
 const canvasSketch = require('canvas-sketch')
 const THREE = (global.THREE = require('three'))
-const {ParticlePath, PointHelper, LineHelper} = require('../utils/particle-path')
-const {Power0, Power1} = require('gsap')
+const {ParticleCurve} = require('../utils/particle-curve')
+const {Power0} = require('gsap')
 
-console.log(ParticlePath)
 // Include any additional ThreeJS utilities
 require('three/examples/js/controls/OrbitControls')
 
@@ -75,7 +74,7 @@ const sketch = ({context, width, height}) => {
   // positions = positions.slice()
 
   const range = 10
-  for (const {startPosition, endPosition, angle} of positions) {
+  for (const {startPosition, endPosition} of positions) {
     const distance = startPosition.distanceTo(endPosition)
     const cPoint = endPosition.clone()
     cPoint.multiplyScalar(0.5)
@@ -89,7 +88,7 @@ const sketch = ({context, width, height}) => {
       new THREE.Vector3(cPoint.x + range, cPoint.y + distance, range)
     )
 
-    const animation = new ParticlePath({
+    const animation = new ParticleCurve({
       particleCount: THREE.Math.randInt(1000, 1000),
       startPosition,
       endPosition,
@@ -112,7 +111,7 @@ const sketch = ({context, width, height}) => {
     },
     // Render each frame
     render({time}) {
-      const {x, y, z} = camera.position
+      const {x, z} = camera.position
       camera.position.x = x * Math.cos(time * frequency) + z * Math.sin(time * frequency)
       camera.position.z = z * Math.cos(time * frequency) - x * Math.sin(time * frequency)
       // camera.position.y = y * Math.cos(time * frequency) - x * Math.sin(time * frequency)

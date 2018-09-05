@@ -1,8 +1,7 @@
 const THREE = (global.THREE = require('three'))
 const BAS = require('three-bas')
-const {Power0, TweenMax} = require('gsap')
 
-export class ParticlePath extends THREE.Mesh {
+export class ParticleCurve extends THREE.Mesh {
   constructor({
     particleCount = 10000,
     particleGeometry = new THREE.PlaneGeometry(0.1, 0.1),
