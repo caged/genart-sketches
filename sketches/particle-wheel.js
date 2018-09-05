@@ -1,26 +1,109 @@
 const canvasSketch = require('canvas-sketch')
-
-// Assign THREE to global for the examples/
 const THREE = (global.THREE = require('three'))
+const {ParticlePath, PointHelper, LineHelper} = require('../utils/particle-path')
+const {Power0, Power1} = require('gsap')
 
+console.log(ParticlePath)
 // Include any additional ThreeJS utilities
 require('three/examples/js/controls/OrbitControls')
 
 // Parameters for the sketch
 const settings = {
+  pixelRatio: devicePixelRatio,
   animate: true, // Ensure we get an animation loop
   context: 'webgl', // Setup WebGL instead of 2D canvas
   attributes: {antialias: false} // Turn on MSAA
 }
 
-const sketch = ({context}) => {
+const frequency = 0.2
+
+const sketch = ({context, width, height}) => {
   const renderer = new THREE.WebGLRenderer({context})
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100)
+  const camera = new THREE.PerspectiveCamera(65, width / height, 1, 1000)
   const scene = new THREE.Scene()
   const controls = new THREE.OrbitControls(camera)
 
-  camera.position.set(2, 2, -4)
-  camera.lookAt(new THREE.Vector3())
+  renderer.setClearColor(0x181825)
+  camera.position.set(0, 0, 100)
+  camera.lookAt(0, 0, 0)
+
+  // const axesHelper = new THREE.AxesHelper(1000)
+  // scene.add(axesHelper)
+
+  const ambientLight = new THREE.AmbientLight(0x999999)
+  scene.add(ambientLight)
+
+  const sun = new THREE.DirectionalLight(0xffffff, 1)
+  sun.position.set(-10, 40, 1)
+  scene.add(sun)
+
+  const coreGeom = new THREE.SphereBufferGeometry(3, 32, 32)
+  const coreMat = new THREE.MeshLambertMaterial({color: `hsl(1, 100%, 100%)`, wireframe: true})
+  const coreSphere = new THREE.Mesh(coreGeom, coreMat)
+  scene.add(coreSphere)
+
+  const moonGroup = new THREE.Group()
+  scene.add(moonGroup)
+
+  const positions = []
+  const numMoons = 10
+  const coreRadius = coreGeom.parameters.radius
+  const offsetRadius = coreRadius * 10
+
+  for (let i = 0; i < numMoons; i++) {
+    const angle = (i / (numMoons / 2)) * Math.PI
+    const x1 = coreRadius * Math.cos(angle) + camera.near / 2
+    const y1 = coreRadius * Math.sin(angle) + camera.near / 2
+    const x2 = offsetRadius * Math.cos(angle) + camera.near / 2
+    const y2 = offsetRadius * Math.sin(angle) + camera.near / 2
+    const z1 = 0
+    const z2 = 0
+
+    const startPosition = new THREE.Vector3(x1, y1, z1)
+    const endPosition = new THREE.Vector3(x2, y2, z2)
+
+    const moonGeom = new THREE.SphereBufferGeometry(1, 6, 6)
+    const moonMat = new THREE.MeshLambertMaterial({
+      wireframe: true,
+      color: `hsl(${angle * (180 / Math.PI)}, 50%, 50%)`
+    })
+    const moonSphere = new THREE.Mesh(moonGeom, moonMat)
+    moonSphere.position.set(x2, y2, z2)
+    moonGroup.add(moonSphere)
+    positions.push({startPosition, endPosition, angle})
+  }
+
+  const animGroup = new THREE.Group()
+  scene.add(animGroup)
+  // positions = positions.slice()
+
+  const range = 1
+  for (const {startPosition, endPosition, angle} of positions) {
+    const distance = startPosition.distanceTo(endPosition)
+    const cPoint = endPosition.clone()
+    cPoint.multiplyScalar(0.5)
+
+    const controlRange0 = new THREE.Box3(
+      new THREE.Vector3(-cPoint.x, -cPoint.y, -3),
+      new THREE.Vector3(cPoint.x, cPoint.y, 3)
+    )
+    const controlRange1 = new THREE.Box3(
+      new THREE.Vector3(cPoint.x - range, cPoint.y - distance / 2, -3),
+      new THREE.Vector3(cPoint.x + range, cPoint.y + distance, 3)
+    )
+
+    const animation = new ParticlePath({
+      particleCount: THREE.Math.randInt(1000, 1000),
+      startPosition,
+      endPosition,
+      controlRange0,
+      controlRange1
+    })
+    animation.animate(20.0, {ease: Power0.easeIn, repeat: -1})
+    animGroup.add(animation)
+    // console.log(scene)
+    animation.debug(scene)
+  }
 
   return {
     // Handle window resize events
@@ -31,7 +114,21 @@ const sketch = ({context}) => {
       camera.updateProjectionMatrix()
     },
     // Render each frame
-    render() {
+    render({time}) {
+      // for (const [i, moon] of moonGroup.children.entries()) {
+      //   const angle = (i / (numMoons / 2)) * Math.PI
+      //
+      //   // moon.position.x = offsetRadius * Math.cos(time * frequency + angle)
+      //   // moon.position.y = offsetRadius * Math.sin(time * frequency + angle)
+      //   // moon.rotation.y = time * 5 + i
+      //   // animGroup.rotation.x = offsetRadius * Math.cos(time * frequency + angle)
+      //   // animGroup.rotation.y = offsetRadius * Math.sin(time * frequency + angle)
+      // }
+
+      // camera.position.z += Math.sin(time + 10)
+      // camera.position.y += Math.sin(time)
+      // camera.position.x += Math.cos(time * frequency)
+
       controls.update()
       renderer.render(scene, camera)
     }
