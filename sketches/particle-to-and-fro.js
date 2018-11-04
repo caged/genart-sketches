@@ -113,7 +113,7 @@ function Animation() {
   // 'i' is the index of the prefab
   // 'total' is the total number of prefabs (same as prefabCount)
   // this is the most compact way of filling the buffer, but it's a little slower and less flexible than the others
-  geometry.createAttribute('aAxisAngle', 4, function(data, i, total) {
+  geometry.createAttribute('aAxisAngle', 4, function(data) {
     // get a random axis
     axis.x = THREE.Math.randFloatSpread(2)
     axis.y = THREE.Math.randFloatSpread(2)
@@ -279,7 +279,7 @@ const sketch = ({context, width, height}) => {
       camera.updateProjectionMatrix()
     },
     // Render each frame
-    render({time, deltaTime}) {
+    render() {
       // Rotate our mesh slowly
       // camera.position.x = Math.sin(time) * 360
       // camera.position.y = Math.sin(time * 5) * 40

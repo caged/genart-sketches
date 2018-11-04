@@ -1,5 +1,6 @@
 const THREE = (global.THREE = require('three'))
 const BAS = require('three-bas')
+const {TweenMax} = require('gsap')
 
 export class ParticleCurve extends THREE.Mesh {
   constructor({
@@ -79,6 +80,7 @@ export class ParticleCurve extends THREE.Mesh {
     this.controlRange1 = controlRange1
 
     this.createAttributes()
+    this.frustumCulled = false
   }
 
   createAttributes() {
@@ -143,11 +145,6 @@ export class ParticleCurve extends THREE.Mesh {
       color.setHSL(h, s, l)
       color.toArray(data)
     })
-  }
-
-  createMaterial() {
-    // THREE.Mesh.call(this, this.geometry, material)
-    this.frustumCulled = false
   }
 
   get time() {
