@@ -6,7 +6,7 @@ const shuffle = require('shuffle-array')
 const palettes = palette(10)
 const pcolors = palettes.random()
 const baseColor = shuffle.pick(pcolors)
-let colors = pcolors.filter(c => c !== baseColor)
+const colors = pcolors.filter(c => c !== baseColor)
 
 const settings = {
   dimensions: [1000, 1000],
@@ -28,7 +28,7 @@ const generateStripes = ({
   // const center = (i) => i *
 
   for (let i = 0; i < total; i++) {
-    const stripeCenter = lerp(0, width, 0.5)
+    const mid = lerp(0, width, 0.5)
     const notchHeightA = notchHeight * i
     const notchHeightB = notchHeight * (i + 1)
     const cutA = Math.sin(degToRad(notchDegrees)) * notchHeightA + height
@@ -39,23 +39,23 @@ const generateStripes = ({
     const x = startX
     const space = i === 0 ? 0 : spaceBetween
 
-    const sideAStart = [
+    const a = [
       // Top left corner
       [x, y],
 
-      [stripeCenter - cutA, y],
+      [mid - cutA, y],
       // Top right corner
       // [x * i + width, y + space],
       // Bottom right corner
-      [stripeCenter - cutB, y + height],
+      [mid - cutB, y + height],
       // Bottom left corner
       [x * i, y + height]
       // Point before notch
     ]
 
-    points.push(sideAStart)
+    points.push(a)
 
-    points.push([[sideAStart[1][0], sideAStart[1][1] + notchHeightA]])
+    points.push([a[1], [mid, y + height]])
 
     stripeData.push(points)
   }
@@ -82,36 +82,81 @@ const debugPoints = (stripes, context) => {
 }
 
 const sketch = () => {
-  return ({context, width, height}) => {
+  return ({context: ctx, width, height, canvasHeight, canvasWidth}) => {
+    const sh = 100
+    const sw = width
+    const nh = 50
+    const mid = lerp(0, sw, 0.5)
+    const bx = lerp(0, sw, 0.39)
+    const tx = lerp(0, sw, 0.36)
+
+    ctx.fillStyle = 'hsla(0, 100%, 60%, 0.8)'
+    ctx.beginPath()
+    ctx.moveTo(0, 0)
+    ctx.lineTo(bx, 0)
+    ctx.lineTo(tx, sh)
+    ctx.lineTo(0, sh)
+    ctx.fill()
+
+    const a = bx - tx
+    const b = 0 - sh
+    const c = Math.sqrt(a * a + b * b)
+
+    ctx.fillStyle = 'hsla(0, 100%, 65%, 0.8)'
+    ctx.beginPath()
+    ctx.moveTo(bx, 0)
+    ctx.lineTo(mid, nh)
+    ctx.lineTo(mid, c + nh)
+    ctx.lineTo(tx, sh)
+    ctx.lineTo(bx, 0)
+    ctx.fill()
+
+    ctx.setTransform(-devicePixelRatio, 0, 0, devicePixelRatio, canvasWidth, 0)
+    ctx.fillStyle = 'hsla(0, 100%, 60%, 0.8)'
+    ctx.beginPath()
+    ctx.moveTo(0, 0)
+    ctx.lineTo(bx, 0)
+    ctx.lineTo(tx, sh)
+    ctx.lineTo(0, sh)
+    ctx.fill()
+
+    ctx.fillStyle = 'hsla(0, 100%, 20%, 0.8)'
+    ctx.beginPath()
+    ctx.moveTo(bx, 0)
+    ctx.lineTo(mid, nh)
+    ctx.lineTo(mid, c + nh)
+    ctx.lineTo(tx, sh)
+    ctx.lineTo(bx, 0)
+    ctx.fill()
+
     // Move origin to bottom left
     // context.translate(0, height)
-
-    const stripeHeight = 100
-    const stripes = generateStripes({
-      total: 1,
-      width,
-      height: stripeHeight,
-      spaceBetween: 5
-    })
-    colors = shuffle(colors)
-
-    for (const [i, s] of stripes.entries()) {
-      for (const section of s) {
-        context.beginPath()
-        context.moveTo(...section.shift())
-
-        for (const p of section) {
-          context.lineTo(...p)
-        }
-
-        context.fillStyle = colors[i]
-        context.fill()
-      }
-
-      // context.lineTo(degToRad())
-    }
-
-    debugPoints(stripes, context)
+    //   const stripeHeight = 100
+    //   const stripes = generateStripes({
+    //     total: 1,
+    //     width,
+    //     height: stripeHeight,
+    //     spaceBetween: 5
+    //   })
+    //   colors = shuffle(colors)
+    //
+    //   for (const [i, s] of stripes.entries()) {
+    //     for (const section of s) {
+    //       context.beginPath()
+    //       context.moveTo(...section.shift())
+    //
+    //       for (const p of section) {
+    //         context.lineTo(...p)
+    //       }
+    //
+    //       context.fillStyle = colors[i]
+    //       context.fill()
+    //     }
+    //
+    //     // context.lineTo(degToRad())
+    //   }
+    //
+    //   debugPoints(stripes, context)
   }
 }
 
