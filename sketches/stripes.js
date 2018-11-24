@@ -51,15 +51,19 @@ const generateStripes = ({
 }
 
 const sketch = ({canvasWidth}) => {
-  return ({context: ctx, width}) => {
-    const stripes = generateStripes({num: 3, sw: width, sh: 100, sb: 2})
+  return ({context: ctx, width, height}) => {
+    ctx.fillStyle = `hsla(90, 10%, 95%, 1)`
+    ctx.rect(0, 0, width, height)
+    ctx.fill()
 
+    const stripes = generateStripes({num: 5, sw: width, sh: 75, sb: 20})
+    const lightness = 50
     // Each stripe
     for (const [i, s] of stripes.entries()) {
       const a = s[0]
       const b = s[1]
 
-      ctx.fillStyle = 'hsla(0, 100%, 60%, 0.8)'
+      ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness}%, 0.8)`
       ctx.beginPath()
       ctx.moveTo(...a[0])
       ctx.lineTo(...a[1])
@@ -68,7 +72,7 @@ const sketch = ({canvasWidth}) => {
       ctx.fill()
 
       if (b) {
-        ctx.fillStyle = 'hsla(0, 100%, 65%, 0.8)'
+        ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness + 5}%, 0.8)`
         ctx.beginPath()
         ctx.moveTo(...b[0])
         ctx.lineTo(...b[1])
@@ -79,11 +83,12 @@ const sketch = ({canvasWidth}) => {
       }
 
       // Draw symetrical side
-      // TODO: Move this into a loop to avoid duplication.  While debugging, I like the explicitness of this.
+      // TODO: Move this into a loop to avoid duplication.
+      // While debugging, I like the explicitness of this.
       ctx.save()
       ctx.setTransform(-devicePixelRatio, 0, 0, devicePixelRatio, canvasWidth, 0)
 
-      ctx.fillStyle = 'hsla(0, 100%, 60%, 0.8)'
+      ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness}%, 0.8)`
       ctx.beginPath()
       ctx.moveTo(...a[0])
       ctx.lineTo(...a[1])
@@ -92,7 +97,7 @@ const sketch = ({canvasWidth}) => {
       ctx.fill()
 
       if (b) {
-        ctx.fillStyle = 'hsla(0, 100%, 45%, 0.8)'
+        ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness - 15}%, 0.8)`
         ctx.beginPath()
         ctx.moveTo(...b[0])
         ctx.lineTo(...b[1])
