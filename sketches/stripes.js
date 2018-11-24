@@ -9,7 +9,7 @@ const baseColor = shuffle.pick(pcolors)
 const colors = pcolors.filter(c => c !== baseColor)
 
 const settings = {
-  dimensions: [1000, 1000],
+  dimensions: [1000, 450],
   pixelRatio: devicePixelRatio
 }
 
