@@ -21,30 +21,27 @@ const generateStripes = ({
   nh = 50 /* notch height */,
   num = 3 /* total stripes */,
   sb = 5 /* space between stripes */,
-  bxs = 0.39 /* where to start the bottom angle */,
-  txs = 0.36 /* where to start the top angle */
+  ang = 45 /* angle of triangle */
 }) => {
   const stripes = []
   const mid = lerp(0, sw, 0.5)
-  const ltx = lerp(0, sw, bxs)
-  const lbx = lerp(0, sw, txs)
-
-  const a = ltx - lbx
-  const b = 0 - sh
-  const c = Math.sqrt(a * a + b * b)
 
   for (let i = 0; i < num; i++) {
-    const space = i === 0 ? 0 : sb
+    // const a = ltx - lbx
+    // const b = 0 - sh
+    // const c = Math.sqrt(a * a + b * b)
+    // const space = i === 0 ? 0 : sb
     const yt = oy + sh * i
     const yb = oy + sh + sh * i
-    const tx = ltx - a * i
-    const bx = lbx - a * i
+    // const tx = ltx - a * i
+    // const bx = lbx - a * i
 
-    const pa = [[ox, yt], [tx, yt], [bx, yb], [ox, yb]]
-    const pb = [[tx, yt], [mid, yt + nh], [mid, sh * i + c + nh], [bx, yt + sh], [tx, yt]]
+    const pa = [[ox, yt], [mid, yt], [mid, yb], [ox, yb]]
+    // const pa = [[ox, yt], [tx, yt], [bx, yb], [ox, yb]]
+    // const pb = [[tx, yt], [mid, yt + nh], [mid, sh * i + c + nh], [bx, yt + sh], [tx, yt]]
     //const pb = [[tx, yt], [mid, i === 0 ? 0 : yt + nh], [mid, sh * i + c + nh], [bx, yt + sh - space], [tx, yt]]
 
-    stripes.push([pa, pb])
+    stripes.push([pa])
   }
 
   return stripes
