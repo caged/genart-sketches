@@ -41,7 +41,8 @@ const generateStripes = ({
     const bx = lbx - a * i
 
     const pa = [[ox, yt], [tx, yt], [bx, yb], [ox, yb]]
-    const pb = [[tx, yt], [mid, yt + nh], [mid, sh * i + c + nh], [bx, yt + sh - space], [tx, yt]]
+    const pb = [[tx, yt], [mid, yt + nh], [mid, sh * i + c + nh], [bx, yt + sh], [tx, yt]]
+    //const pb = [[tx, yt], [mid, i === 0 ? 0 : yt + nh], [mid, sh * i + c + nh], [bx, yt + sh - space], [tx, yt]]
 
     stripes.push([pa, pb])
   }
