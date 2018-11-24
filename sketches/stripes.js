@@ -29,13 +29,13 @@ const generateStripes = ({
   const ltx = lerp(0, sw, bxs)
   const lbx = lerp(0, sw, txs)
 
-  for (let i = 0; i < num; i++) {
-    const a = ltx - lbx
-    const b = 0 - sh
-    const c = Math.sqrt(a * a + b * b)
+  const a = ltx - lbx
+  const b = 0 - sh
+  const c = Math.sqrt(a * a + b * b)
 
-    const space = sb // = i === 0 ? 0 : sb
-    const yt = space + oy + sh * i
+  for (let i = 0; i < num; i++) {
+    const space = i === 0 ? 0 : sb
+    const yt = oy + sh * i
     const yb = oy + sh + sh * i
     const tx = ltx - a * i
     const bx = lbx - a * i
