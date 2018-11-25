@@ -9,10 +9,12 @@ const baseColor = shuffle.pick(pcolors)
 const colors = pcolors.filter(c => c !== baseColor)
 
 const settings = {
-  dimensions: [1000, 550],
+  dimensions: [1000, 500],
   pixelRatio: devicePixelRatio
 }
 
+// From https://github.com/timHau/geometry.js
+// ISC licensed per package.json
 function intersectionLL([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]]) {
   // inspired by: http://www.kevlindev.com/gui/math/intersection/Intersection.js
   const uaT = (xb2 - xb1) * (ya1 - yb1) - (yb2 - yb1) * (xa1 - xb1)
@@ -35,8 +37,7 @@ const generateStripes = ({
   num = 3 /* total stripes */,
   sb = 5 /* space between stripes */,
   oang = 45 /* outer angle of pyramid */,
-  iang = oang / 2 /* inner angle of pyramid */,
-  ctx = null
+  iang = oang / 2 /* inner angle of pyramid */
 }) => {
   const stripes = []
   const mid = lerp(0, sw, 0.5)
@@ -47,7 +48,7 @@ const generateStripes = ({
   const midLine = [[mid, oy], [mid, height]]
 
   for (let i = 0; i < num; i++) {
-    const yt = oy + sh * i
+    const yt = oy + (i === 0 ? 0 : sb) + sh * i
     const yb = oy + sh + sh * i
 
     // close path by ending at origin point?
@@ -111,7 +112,7 @@ const sketch = ({canvasWidth}) => {
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
-    const stripes = generateStripes({num: 5, sw: width, sh: 75, sb: 20, ctx})
+    const stripes = generateStripes({num: 5, sw: width, sh: 55, ctx})
     const lightness = 50
     const opacity = 0.9
     // Each stripe
@@ -162,8 +163,6 @@ const sketch = ({canvasWidth}) => {
 
       ctx.restore()
     }
-
-    // debugTriangle(ctx, stripes[0], 45)
   }
 }
 
