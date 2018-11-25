@@ -44,6 +44,7 @@ const generateStripes = ({
   const oAngRad = degToRad(180 - oang)
   const iAngRad = degToRad(iang)
   const oAngleLine = [[mid, oy], [mid + height * Math.cos(oAngRad), oy + height * Math.sin(oAngRad)]]
+  const midLine = [[mid, oy], [mid, height]]
 
   for (let i = 0; i < num; i++) {
     const yt = oy + sh * i
@@ -59,11 +60,10 @@ const generateStripes = ({
 
     const itop = intersectionLL([pa[0], pa[1]], oAngleLine)
     const ibot = intersectionLL([pa[2], pa[3]], oAngleLine)
-
-    if (ibot) {
-      pa[1][0] = itop[0]
-      pa[2][0] = ibot[0]
-    }
+    const iAngleTopLine = [[itop[0], yt], [itop[0] + height * Math.cos(iAngRad), yt + height * Math.sin(iAngRad)]]
+    const iAngleBotLine = [[ibot[0], yb], [ibot[0] + height * Math.cos(iAngRad), yb + height * Math.sin(iAngRad)]]
+    const itopB = intersectionLL(midLine, iAngleTopLine)
+    const ibotB = intersectionLL(midLine, iAngleBotLine)
 
     const pb = [
       [itop[0], yt] /* top left */,
@@ -73,42 +73,10 @@ const generateStripes = ({
       [itop[0], yt] /* top left */
     ]
 
-    const iAngleTopLine = [[itop[0], yt], [itop[0] + height * Math.cos(iAngRad), yt + height * Math.sin(iAngRad)]]
-    const iAngleBotLine = [[ibot[0], yb], [ibot[0] + height * Math.cos(iAngRad), yb + height * Math.sin(iAngRad)]]
-    const midLine = [[mid, oy], [mid, height]]
-
-    const itopB = intersectionLL(midLine, iAngleTopLine)
-    const ibotB = intersectionLL(midLine, iAngleBotLine)
-    console.log(itopB, ibotB)
-
-    if (itopB) {
-      // ctx.beginPath()
-      // ctx.strokeStyle = 'black'
-      // ctx.moveTo(...iAngleTopLine[0])
-      // ctx.lineTo(...iAngleTopLine[1])
-      // ctx.stroke()
-      //
-      // ctx.beginPath()
-      // ctx.strokeStyle = 'green'
-      // ctx.moveTo(...iAngleBotLine[0])
-      // ctx.lineTo(...iAngleBotLine[1])
-      // ctx.stroke()
-      //
-      // ctx.beginPath()
-      // ctx.fillStyle = 'black'
-      // ctx.arc(itopB[0], itopB[1], 3, 0, Math.PI * 2)
-      // ctx.fill()
-      //
-      // ctx.beginPath()
-      // ctx.fillStyle = 'black'
-      // ctx.arc(ibotB[0], ibotB[1], 3, 0, Math.PI * 2)
-      // ctx.fill()
-
-      // console.log(itopB, ibotB)
-      // pb[2] = ibotB
-      pb[1] = itopB
-      pb[2] = ibotB
-    }
+    pa[1] = itop
+    pa[2] = ibot
+    pb[1] = itopB
+    pb[2] = ibotB
 
     stripes.push([pa, pb])
   }
