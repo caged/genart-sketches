@@ -112,9 +112,10 @@ const sketch = ({canvasWidth}) => {
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
-    const stripes = generateStripes({num: 5, sw: width, sh: 55, ctx})
+    const stripes = generateStripes({num: 9, sw: width, sh: 55, ctx})
     const lightness = 50
     const opacity = 0.9
+
     // Each stripe
     for (const [i, s] of stripes.entries()) {
       const a = s[0]
