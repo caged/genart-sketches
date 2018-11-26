@@ -13,7 +13,7 @@ const settings = {
   pixelRatio: devicePixelRatio
 }
 
-// From https://github.com/timHau/geometry.js
+// Modified from https://github.com/timHau/geometry.js
 // ISC licensed per package.json
 function intersectionLL([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]]) {
   // inspired by: http://www.kevlindev.com/gui/math/intersection/Intersection.js
