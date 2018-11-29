@@ -9,23 +9,30 @@ const baseColor = shuffle.pick(pcolors)
 const colors = pcolors.filter(c => c !== baseColor)
 
 const settings = {
-  dimensions: [1000, 500],
+  dimensions: [1000, 800],
   pixelRatio: devicePixelRatio
 }
 
 // Modified from https://github.com/timHau/geometry.js
 // ISC licensed per package.json
-function intersectionLL([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]]) {
+function intersectionLL([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]], allowOffscreenIntersection = true) {
   // inspired by: http://www.kevlindev.com/gui/math/intersection/Intersection.js
   const uaT = (xb2 - xb1) * (ya1 - yb1) - (yb2 - yb1) * (xa1 - xb1)
   const ubT = (xa2 - xa1) * (ya1 - yb1) - (ya2 - ya1) * (xa1 - xb1)
   let ub = (yb2 - yb1) * (xa2 - xa1) - (xb2 - xb1) * (ya2 - ya1)
   // coincident or parallel
-  if (ub === 0) return null
+  if (ub === 0) {
+    console.warn('coincident or parallel')
+    return null
+  }
+
   const ua = uaT / ub
   ub = ubT / ub
-  // doesn't intersect
-  if (ua < 0 || ua > 1 || ub < 0 || ub > 1) return null
+  // doesn't intersect or is offscreen
+  if (!allowOffscreenIntersection && (ua < 0 || ua > 1 || ub < 0 || ub > 1)) {
+    console.warn(`lines do not intersect on screen ${xa1 + ua * (xa2 - xa1)}, ${ya1 + ua * (ya2 - ya1)}`)
+    return null
+  }
   return [xa1 + ua * (xa2 - xa1), ya1 + ua * (ya2 - ya1)]
 }
 
@@ -61,6 +68,11 @@ const generateStripes = ({
 
     const itop = intersectionLL([pa[0], pa[1]], oAngleLine)
     const ibot = intersectionLL([pa[2], pa[3]], oAngleLine)
+
+    // Intersections are off screen.  Set them to the canvas edge
+    // itop = itop ? itop : [ox, pa[0][1]]
+    // ibot = ibot ? ibot : [ox, pa[2][1]]
+
     const iAngleTopLine = [[itop[0], yt], [itop[0] + height * Math.cos(iAngRad), yt + height * Math.sin(iAngRad)]]
     const iAngleBotLine = [[ibot[0], yb], [ibot[0] + height * Math.cos(iAngRad), yb + height * Math.sin(iAngRad)]]
     const itopB = intersectionLL(midLine, iAngleTopLine)
@@ -112,7 +124,7 @@ const sketch = ({canvasWidth}) => {
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
-    const stripes = generateStripes({num: 9, sw: width, sh: 55, ctx})
+    const stripes = generateStripes({num: 8, oang: 25, sw: width, sh: 75, ctx})
     const lightness = 50
     const opacity = 0.9
 
@@ -164,6 +176,8 @@ const sketch = ({canvasWidth}) => {
 
       ctx.restore()
     }
+
+    debugTriangle(ctx, stripes[0])
   }
 }
 
