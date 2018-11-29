@@ -15,7 +15,7 @@ const settings = {
 
 // Modified from https://github.com/timHau/geometry.js
 // ISC licensed per package.json
-function intersectionLL([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]], allowOffscreenIntersection = true) {
+function intersectxy([[xa1, ya1], [xa2, ya2]], [[xb1, yb1], [xb2, yb2]], allowOffscreenIntersection = true) {
   // inspired by: http://www.kevlindev.com/gui/math/intersection/Intersection.js
   const uaT = (xb2 - xb1) * (ya1 - yb1) - (yb2 - yb1) * (xa1 - xb1)
   const ubT = (xa2 - xa1) * (ya1 - yb1) - (ya2 - ya1) * (xa1 - xb1)
@@ -66,8 +66,8 @@ const generateStripes = ({
       [ox, yb] /* bottom left */
     ]
 
-    const itop = intersectionLL([pa[0], pa[1]], oAngleLine)
-    const ibot = intersectionLL([pa[2], pa[3]], oAngleLine)
+    const itop = intersectxy([pa[0], pa[1]], oAngleLine)
+    const ibot = intersectxy([pa[2], pa[3]], oAngleLine)
 
     // Intersections are off screen.  Set them to the canvas edge
     // itop = itop ? itop : [ox, pa[0][1]]
@@ -75,8 +75,8 @@ const generateStripes = ({
 
     const iAngleTopLine = [[itop[0], yt], [itop[0] + height * Math.cos(iAngRad), yt + height * Math.sin(iAngRad)]]
     const iAngleBotLine = [[ibot[0], yb], [ibot[0] + height * Math.cos(iAngRad), yb + height * Math.sin(iAngRad)]]
-    const itopB = intersectionLL(midLine, iAngleTopLine)
-    const ibotB = intersectionLL(midLine, iAngleBotLine)
+    const itopB = intersectxy(midLine, iAngleTopLine)
+    const ibotB = intersectxy(midLine, iAngleBotLine)
 
     const pb = [
       [itop[0], yt] /* top left */,
@@ -124,7 +124,7 @@ const sketch = ({canvasWidth}) => {
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
-    const stripes = generateStripes({num: 8, oang: 25, sw: width, sh: 75, ctx})
+    const stripes = generateStripes({num: 8, oang: 45, iang: 25, sw: width, sh: 75, ctx})
     const lightness = 50
     const opacity = 0.9
 
@@ -177,7 +177,7 @@ const sketch = ({canvasWidth}) => {
       ctx.restore()
     }
 
-    debugTriangle(ctx, stripes[0])
+    // debugTriangle(ctx, stripes[0], 25)
   }
 }
 
