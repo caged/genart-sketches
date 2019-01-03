@@ -1,16 +1,9 @@
 const canvasSketch = require('canvas-sketch')
 const {lerp, degToRad} = require('canvas-sketch-util/math')
-const {palette} = require('../utils/palette')
 const shuffle = require('shuffle-array')
-const {range} = require('d3-array')
 const {scaleSequential} = require('d3-scale')
 const sc = require('d3-scale-chromatic')
 const {hsl} = require('d3-color')
-
-const palettes = palette(10)
-const pcolors = palettes.random()
-const baseColor = shuffle.pick(pcolors)
-const colors = pcolors.filter(c => c !== baseColor)
 
 const interpolation = shuffle.pick([
   sc.interpolatePRGn,
@@ -163,7 +156,7 @@ const sketch = ({canvasWidth}) => {
     ctx.fill()
 
     const colorScale = scaleSequential(interpolation).domain([0, stripeCount - 1])
-    const stripes = generateStripes({num: stripeCount, oang: 75, iang: 20, sw: width, sh: 50, sb: 2})
+    const stripes = generateStripes({num: stripeCount, oang: 65, iang: 20, sw: width, sh: 50, sb: 2})
 
     // Each stripe
     for (const [i, s] of stripes.entries()) {
