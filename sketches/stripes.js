@@ -1,15 +1,52 @@
 const canvasSketch = require('canvas-sketch')
-const {mapRange, lerp, degToRad, radToDeg} = require('canvas-sketch-util/math')
+const {lerp, degToRad} = require('canvas-sketch-util/math')
 const {palette} = require('../utils/palette')
 const shuffle = require('shuffle-array')
+const {range} = require('d3-array')
+const {scaleSequential} = require('d3-scale')
+const sc = require('d3-scale-chromatic')
+const {hsl} = require('d3-color')
 
 const palettes = palette(10)
 const pcolors = palettes.random()
 const baseColor = shuffle.pick(pcolors)
 const colors = pcolors.filter(c => c !== baseColor)
 
+const interpolation = shuffle.pick([
+  sc.interpolatePRGn,
+  sc.interpolateBrBG,
+  sc.interpolatePiYG,
+  sc.interpolatePuOr,
+  sc.interpolateRdBu,
+  sc.interpolateRdGy,
+  sc.interpolateRdYlBu,
+  sc.interpolateRdYlGn,
+  sc.interpolateSpectral,
+  sc.interpolateViridis,
+  sc.interpolateInferno,
+  sc.interpolateMagma,
+  sc.interpolatePlasma,
+  sc.interpolateWarm,
+  sc.interpolateCool,
+  sc.interpolateCubehelixDefault,
+  sc.interpolateBuGn,
+  sc.interpolateBuPu,
+  sc.interpolateGnBu,
+  sc.interpolateOrRd,
+  sc.interpolatePuBuGn,
+  sc.interpolatePuBu,
+  sc.interpolatePuRd,
+  sc.interpolateRdPu,
+  sc.interpolateYlGnBu,
+  sc.interpolateYlGn,
+  sc.interpolateYlOrBr,
+  sc.interpolateYlOrRd,
+  sc.interpolateRainbow,
+  sc.interpolateSinebow
+])
+
 const settings = {
-  dimensions: [1000, 800],
+  dimensions: [800, 1000],
   pixelRatio: devicePixelRatio
 }
 
@@ -120,20 +157,21 @@ function debugTriangle(ctx, stripe, angle = 45) {
 
 const sketch = ({canvasWidth}) => {
   return ({context: ctx, width, height}) => {
+    const stripeCount = 20
     ctx.fillStyle = `hsla(90, 10%, 95%, 1)`
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
-    const stripes = generateStripes({num: 8, oang: 45, iang: 25, sw: width, sh: 75, ctx})
-    const lightness = 50
-    const opacity = 0.9
+    const colorScale = scaleSequential(interpolation).domain([0, stripeCount - 1])
+    const stripes = generateStripes({num: stripeCount, oang: 75, iang: 20, sw: width, sh: 50, sb: 2})
 
     // Each stripe
     for (const [i, s] of stripes.entries()) {
       const a = s[0]
       const b = s[1]
+      const c = hsl(colorScale(i))
 
-      ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness}%, ${opacity})`
+      ctx.fillStyle = c
       ctx.beginPath()
       ctx.moveTo(...a[0])
       ctx.lineTo(...a[1])
@@ -142,7 +180,7 @@ const sketch = ({canvasWidth}) => {
       ctx.fill()
 
       if (b) {
-        ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness + 5}%, ${opacity})`
+        ctx.fillStyle = c.brighter(0.1)
         ctx.beginPath()
         ctx.moveTo(...b[0])
         ctx.lineTo(...b[1])
@@ -155,7 +193,7 @@ const sketch = ({canvasWidth}) => {
       ctx.save()
       ctx.setTransform(-devicePixelRatio, 0, 0, devicePixelRatio, canvasWidth, 0)
 
-      ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness}%, ${opacity})`
+      ctx.fillStyle = c
       ctx.beginPath()
       ctx.moveTo(...a[0])
       ctx.lineTo(...a[1])
@@ -164,7 +202,7 @@ const sketch = ({canvasWidth}) => {
       ctx.fill()
 
       if (b) {
-        ctx.fillStyle = `hsla(${i * 10}, 100%, ${lightness - 15}%, ${opacity})`
+        ctx.fillStyle = c.darker(0.4)
         ctx.beginPath()
         ctx.moveTo(...b[0])
         ctx.lineTo(...b[1])
