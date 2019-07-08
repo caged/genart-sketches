@@ -6,40 +6,40 @@ const sc = require('d3-scale-chromatic')
 const {hsl} = require('d3-color')
 
 const interpolation = shuffle.pick([
-  sc.interpolatePRGn,
-  sc.interpolateBrBG,
-  sc.interpolatePiYG,
-  sc.interpolatePuOr,
-  sc.interpolateRdBu,
-  sc.interpolateRdGy,
-  sc.interpolateRdYlBu,
-  sc.interpolateRdYlGn,
-  sc.interpolateSpectral,
-  sc.interpolateViridis,
-  sc.interpolateInferno,
-  sc.interpolateMagma,
-  sc.interpolatePlasma,
-  sc.interpolateWarm,
-  sc.interpolateCool,
-  sc.interpolateCubehelixDefault,
-  sc.interpolateBuGn,
-  sc.interpolateBuPu,
-  sc.interpolateGnBu,
-  sc.interpolateOrRd,
-  sc.interpolatePuBuGn,
-  sc.interpolatePuBu,
-  sc.interpolatePuRd,
-  sc.interpolateRdPu,
-  sc.interpolateYlGnBu,
-  sc.interpolateYlGn,
-  sc.interpolateYlOrBr,
-  sc.interpolateYlOrRd,
-  sc.interpolateRainbow,
-  sc.interpolateSinebow
+  // sc.interpolatePRGn,
+  // sc.interpolateBrBG,
+  // sc.interpolatePiYG,
+  // sc.interpolatePuOr,
+  // sc.interpolateRdBu,
+  // sc.interpolateRdGy,
+  // sc.interpolateRdYlBu,
+  // sc.interpolateRdYlGn,
+  sc.interpolateSpectral
+  // sc.interpolateViridis,
+  // sc.interpolateInferno,
+  // sc.interpolateMagma,
+  // sc.interpolatePlasma,
+  // sc.interpolateWarm,
+  // sc.interpolateCool,
+  // sc.interpolateCubehelixDefault,
+  // sc.interpolateBuGn,
+  // sc.interpolateBuPu,
+  // sc.interpolateGnBu,
+  // sc.interpolateOrRd,
+  // sc.interpolatePuBuGn,
+  // sc.interpolatePuBu,
+  // sc.interpolatePuRd,
+  // sc.interpolateRdPu,
+  // sc.interpolateYlGnBu,
+  // sc.interpolateYlGn,
+  // sc.interpolateYlOrBr,
+  // sc.interpolateYlOrRd,
+  // sc.interpolateRainbow,
+  // sc.interpolateSinebow
 ])
 
 const settings = {
-  dimensions: [800, 1000],
+  dimensions: [3600, 3600],
   pixelRatio: devicePixelRatio
 }
 
@@ -150,13 +150,13 @@ function debugTriangle(ctx, stripe, angle = 45) {
 
 const sketch = ({canvasWidth}) => {
   return ({context: ctx, width, height}) => {
-    const stripeCount = 20
+    const stripeCount = 25
     ctx.fillStyle = `hsla(90, 10%, 95%, 1)`
     ctx.rect(0, 0, width, height)
     ctx.fill()
 
     const colorScale = scaleSequential(interpolation).domain([0, stripeCount - 1])
-    const stripes = generateStripes({num: stripeCount, oang: 65, iang: 20, sw: width, sh: 50, sb: 2})
+    const stripes = generateStripes({num: stripeCount, oang: 65, iang: 25, sw: width, sh: 145, sb: 5})
 
     // Each stripe
     for (const [i, s] of stripes.entries()) {
