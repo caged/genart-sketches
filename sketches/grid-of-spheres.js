@@ -6,7 +6,7 @@ const {grid} = require('../utils/grid')
 const {palette} = require('../utils/palette')
 
 const settings = {
-  dimensions: 'A4',
+  dimensions: [12 * 72, 12 * 72],
   pixelRatio: devicePixelRatio,
   exportPixelRatio: devicePixelRatio
 }
