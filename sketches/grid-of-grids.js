@@ -6,12 +6,12 @@ const {range} = require('d3-array')
 const seedrandom = require('seedrandom')
 
 const settings = {
-  dimensions: 'A4',
+  dimensions: [12 * 300, 12 * 300],
   pixelRatio: devicePixelRatio,
   exportPixelRatio: devicePixelRatio
 }
 
-const count = 100
+const count = 25
 
 canvasSketch(() => {
   return ({context: ctx, width, height}) => {
@@ -33,7 +33,6 @@ canvasSketch(() => {
     ctx.clearRect(0, 0, width, height)
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, width, height)
-
     for (const yv of y.domain()) {
       for (const xv of x.domain()) {
         const cellWidth = x.bandwidth()
