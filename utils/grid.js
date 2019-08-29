@@ -1,9 +1,8 @@
-const {scaleBand} = require('d3-scale')
-const {range} = require('d3-array')
+const { scaleBand } = require('d3-scale')
+const { range } = require('d3-array')
 
 export function* grid(count, width, height) {
   const xys = Math.ceil(Math.sqrt(count))
-
   const ys = scaleBand()
     .domain(range(xys))
     .range([0, height])
@@ -20,7 +19,7 @@ export function* grid(count, width, height) {
 
   for (const yv of ys.domain()) {
     for (const xv of xs.domain()) {
-      yield {x: xs(xv), y: ys(yv), xsize, ysize, i}
+      yield { x: xs(xv), y: ys(yv), xsize, ysize, i }
       i++
     }
   }

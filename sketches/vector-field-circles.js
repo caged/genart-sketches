@@ -5,7 +5,7 @@ const shuffle = require('shuffle-array')
 const {palette} = require('../utils/palette')
 
 const settings = {
-  dimensions: [250, 250],
+  dimensions: [500, 500],
   animate: true,
   pixelRatio: devicePixelRatio,
   exportPixelRatio: devicePixelRatio
