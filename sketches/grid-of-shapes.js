@@ -42,38 +42,38 @@ const circleArcs = ({ x, y, xsize, ysize, context, bleed }) => {
 }
 
 const fans = ({ x, y, xsize, ysize, context, bleed }) => {
-  const leafCount = 12
-  const radius = Math.min((-bleed + xsize) / 2, (-bleed + ysize) / 2)
-  const lineWidth = 0.04
+  const leafCount = 6
+  const radius = Math.min(xsize, ysize) / 2
+  const lineWidth = 0.02
   const colors = shuffle.pick(palettes, { random })
 
-  // context.beginPath()
-  // context.rect(x, y, radius, radius)
-  // context.stroke()
   const cx = x + bleed + (xsize / 2)
   const cy = y + bleed + (ysize / 2)
 
   context.save()
   context.translate(cx, cy)
   context.beginPath()
-  context.fillStyle = 'purple'
-  context.arc(0, 0, -bleed + (xsize / 2), 0, Math.PI * 2)
+  context.fillStyle = 'rgba(100, 100, 100, 0.1)'
+  context.arc(0, 0, radius, 0, Math.PI * 2)
   context.fill()
 
   context.lineWidth = lineWidth
   for (let i = 0; i < leafCount; i++) {
-    const angle = (i / (leafCount / 2)) * Math.PI
-    console.log(angle);
-
+    const angle = (i / leafCount) * Math.PI * 2
+    context.save()
     context.beginPath()
+    context.strokeStyle = 'red'
+    context.moveTo(0, 0)
     context.rotate(angle)
-    context.lineTo(x, y)
+    context.lineTo(ysize / 2.8, ysize / 2.8)
     context.stroke()
+    context.restore()
   }
   context.restore()
 }
 
 const debugDraw = ({ context, bleed, trimWidth, trimHeight, cells }) => {
+  context.save()
   context.beginPath()
   context.strokeStyle = 'red'
   context.lineWidth = 1 / 64
@@ -88,8 +88,7 @@ const debugDraw = ({ context, bleed, trimWidth, trimHeight, cells }) => {
     context.rect(x + bleed, y + bleed, xsize, ysize)
     context.stroke()
   }
-
-  return
+  context.restore()
 }
 
 
