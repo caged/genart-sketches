@@ -2,12 +2,8 @@ const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random')
 const d3 = require('d3');
 const { grid } = require('../utils/grid')
-const { palette } = require('../utils/palette')
 const shuffle = require('shuffle-array')
-const palettes = require('nice-color-palettes')
 
-const CELL_COUNT = 12
-const ITEM_COUNT = 12
 
 const settings = {
   scaleToView: true,
@@ -15,6 +11,44 @@ const settings = {
   dimensions: [10 * 72, 10 * 72],
   bleed: 72
 }
+
+const CELL_COUNT = 12
+const ITEM_COUNT = 12
+
+const interpolations = [
+  d3.interpolatePRGn,
+  d3.interpolateBrBG,
+  d3.interpolatePiYG,
+  d3.interpolatePuOr,
+  d3.interpolateRdBu,
+  d3.interpolateRdGy,
+  d3.interpolateRdYlBu,
+  d3.interpolateRdYlGn,
+  d3.interpolateSpectral,
+  d3.interpolateViridis,
+  d3.interpolateInferno,
+  d3.interpolateMagma,
+  d3.interpolatePlasma,
+  d3.interpolateWarm,
+  d3.interpolateCool,
+  d3.interpolateCubehelixDefault,
+  d3.interpolateBuGn,
+  d3.interpolateBuPu,
+  d3.interpolateGnBu,
+  d3.interpolateOrRd,
+  d3.interpolatePuBuGn,
+  d3.interpolatePuBu,
+  d3.interpolatePuRd,
+  d3.interpolateRdPu,
+  d3.interpolateYlGnBu,
+  d3.interpolateYlGn,
+  d3.interpolateYlOrBr,
+  d3.interpolateYlOrRd,
+  d3.interpolateRainbow,
+  d3.interpolateSinebow
+]
+
+const colorScale = d3.scaleSequential(d3.interpolateSpectral).domain([0, ITEM_COUNT - 1])
 
 const symbolBlade = {
   draw: (context, size) => {
@@ -78,21 +112,28 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
       .attr('stroke', '#eee')
 
     const sgroup = groups.selectAll('.shape')
-      .data(cellGroups.map(d => {
-        const colors = shuffle.pick(palettes)
-        return { ...d, colors }
-      }))
+      .data(cellGroups)
       .join('g')
       .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation - 90})`)
 
+    let gindex = 0
     sgroup.append('path')
       .attr('d', d3.symbol().size(rad * 24).type(symbolBlade))
-      .each(function (d) {
-        const e = d3.select(this)
-        const color = d3.color(shuffle.pick(d.colors))
-        e.attr('fill', color)
-          .attr('stroke', color.darker(0.2))
+      .attr('fill', (d, i) => {
+        let offset = (ITEM_COUNT - 1) - (gindex + i)
+        offset = offset < 0 ? ITEM_COUNT + offset : offset
+
+        const color = colorScale(offset)
+        if (i == ITEM_COUNT - 1) gindex++
+
+        return color
       })
+    // .each(function (d) {
+    //   const e = d3.select(this)
+    //   const color = d3.color(shuffle.pick(d.colors))
+    //   e.attr('fill', color)
+    //     .attr('stroke', color.darker(0.2))
+    // })
     // .attr('stroke', (d) => {
     //   return shuffle.pick(d.colors)
     // })
