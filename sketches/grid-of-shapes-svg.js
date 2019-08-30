@@ -1,8 +1,12 @@
 const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random')
 const d3 = require('d3');
 const { grid } = require('../utils/grid')
+const { palette } = require('../utils/palette')
+const shuffle = require('shuffle-array')
+const palettes = require('nice-color-palettes')
 
-const CELL_COUNT = 16
+const CELL_COUNT = 12
 const ITEM_COUNT = 12
 
 const settings = {
@@ -10,6 +14,17 @@ const settings = {
   parent: false,
   dimensions: [10 * 72, 10 * 72],
   bleed: 72
+}
+
+const symbolBlade = {
+  draw: (context, size) => {
+    const w = Math.sqrt(size)
+    const cpy = w / 2
+
+    context.moveTo(0, 0);
+    context.quadraticCurveTo(w / 2, cpy, w, 0)
+    context.quadraticCurveTo(w / 2, -cpy, 0, 0)
+  }
 }
 
 const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHeight }) => {
@@ -30,14 +45,19 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
 
     const cells = Array.from(grid(CELL_COUNT, bwidth, bheight))
     const { xsize, ysize } = cells[0]
-    const rad = Math.min(xsize / 2, ysize / 2) * 0.8
+    const rad = Math.min(xsize / 2, ysize / 2) * 0.7
     const cellGroups = d3.range(ITEM_COUNT)
       .map((d, i) => {
         const angle = (i * (Math.PI * 2)) / ITEM_COUNT;
         const rotation = angle * (180 / Math.PI);
         const cx = xsize / 2
         const cy = ysize / 2
-        return { angle, rotation, x: cx + Math.cos(angle) * rad, y: cy + Math.sin(angle) * rad }
+        return {
+          angle,
+          rotation,
+          x: cx + Math.cos(angle) * rad,
+          y: cy + Math.sin(angle) * rad
+        }
       })
 
 
@@ -55,25 +75,27 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
       .attr('width', d => d.xsize)
       .attr('height', d => d.ysize)
       .attr('fill', 'none')
-      .attr('stroke', 'red')
+      .attr('stroke', '#eee')
 
     const sgroup = groups.selectAll('.shape')
-      .data(cellGroups)
+      .data(cellGroups.map(d => {
+        const colors = shuffle.pick(palettes)
+        return { ...d, colors }
+      }))
       .join('g')
       .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation - 90})`)
 
     sgroup.append('path')
-      .attr('d', d3.symbol().size(rad * 2).type(d3.symbolStar))
-      .attr('fill', 'none')
-      .attr('stroke', 'green')
-
-    // sgroup.append('rect')
-    //   .attr('width', 10)
-    //   .attr('height', 10)
-
-
-    // groups.append('path')
-    //   .attr('d', d3.symbol().type(d3.symbolTriangle))
+      .attr('d', d3.symbol().size(rad * 24).type(symbolBlade))
+      .each(function (d) {
+        const e = d3.select(this)
+        const color = d3.color(shuffle.pick(d.colors))
+        e.attr('fill', color)
+          .attr('stroke', color.darker(0.2))
+      })
+    // .attr('stroke', (d) => {
+    //   return shuffle.pick(d.colors)
+    // })
 
 
     if (exporting) {
