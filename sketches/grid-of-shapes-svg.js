@@ -12,41 +12,41 @@ const settings = {
   bleed: 72
 }
 
-const CELL_COUNT = 12
+const CELL_COUNT = 25
 const ITEM_COUNT = 12
 
-const interpolations = [
-  d3.interpolatePRGn,
-  d3.interpolateBrBG,
-  d3.interpolatePiYG,
-  d3.interpolatePuOr,
-  d3.interpolateRdBu,
-  d3.interpolateRdGy,
-  d3.interpolateRdYlBu,
-  d3.interpolateRdYlGn,
-  d3.interpolateSpectral,
-  d3.interpolateViridis,
-  d3.interpolateInferno,
-  d3.interpolateMagma,
-  d3.interpolatePlasma,
-  d3.interpolateWarm,
-  d3.interpolateCool,
-  d3.interpolateCubehelixDefault,
-  d3.interpolateBuGn,
-  d3.interpolateBuPu,
-  d3.interpolateGnBu,
-  d3.interpolateOrRd,
-  d3.interpolatePuBuGn,
-  d3.interpolatePuBu,
-  d3.interpolatePuRd,
-  d3.interpolateRdPu,
-  d3.interpolateYlGnBu,
-  d3.interpolateYlGn,
-  d3.interpolateYlOrBr,
-  d3.interpolateYlOrRd,
-  d3.interpolateRainbow,
-  d3.interpolateSinebow
-]
+// const interpolations = [
+//   d3.interpolatePRGn,
+//   d3.interpolateBrBG,
+//   d3.interpolatePiYG,
+//   d3.interpolatePuOr,
+//   d3.interpolateRdBu,
+//   d3.interpolateRdGy,
+//   d3.interpolateRdYlBu,
+//   d3.interpolateRdYlGn,
+//   d3.interpolateSpectral,
+//   d3.interpolateViridis,
+//   d3.interpolateInferno,
+//   d3.interpolateMagma,
+//   d3.interpolatePlasma,
+//   d3.interpolateWarm,
+//   d3.interpolateCool,
+//   d3.interpolateCubehelixDefault,
+//   d3.interpolateBuGn,
+//   d3.interpolateBuPu,
+//   d3.interpolateGnBu,
+//   d3.interpolateOrRd,
+//   d3.interpolatePuBuGn,
+//   d3.interpolatePuBu,
+//   d3.interpolatePuRd,
+//   d3.interpolateRdPu,
+//   d3.interpolateYlGnBu,
+//   d3.interpolateYlGn,
+//   d3.interpolateYlOrBr,
+//   d3.interpolateYlOrRd,
+//   d3.interpolateRainbow,
+//   d3.interpolateSinebow
+// ]
 
 const colorScale = d3.scaleSequential(d3.interpolateSpectral).domain([0, ITEM_COUNT - 1])
 
@@ -58,6 +58,17 @@ const symbolBlade = {
     context.moveTo(0, 0);
     context.quadraticCurveTo(w / 2, cpy, w, 0)
     context.quadraticCurveTo(w / 2, -cpy, 0, 0)
+  }
+}
+
+const symbolBladeHalf = {
+  draw: (context, size) => {
+    const w = Math.sqrt(size)
+    const cpy = w / 2
+
+    context.moveTo(0, 0);
+    context.quadraticCurveTo(w / 2, cpy, w, 0)
+    context.closePath()
   }
 }
 
@@ -79,7 +90,7 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
 
     const cells = Array.from(grid(CELL_COUNT, bwidth, bheight))
     const { xsize, ysize } = cells[0]
-    const rad = Math.min(xsize / 2, ysize / 2) * 0.7
+    const rad = 5 //Math.min(xsize / 4, ysize / 4) * 0.7
     const cellGroups = d3.range(ITEM_COUNT)
       .map((d, i) => {
         const angle = (i * (Math.PI * 2)) / ITEM_COUNT;
@@ -105,38 +116,79 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
       .join('g')
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
 
-    groups.append('rect')
-      .attr('width', d => d.xsize)
-      .attr('height', d => d.ysize)
-      .attr('fill', 'none')
-      .attr('stroke', '#eee')
+    // groups.append('rect')
+    //   .attr('width', d => d.xsize)
+    //   .attr('height', d => d.ysize)
+    //   .attr('fill', 'none')
+    //   .attr('stroke', '#eee')
 
+    let groupidx = 0
     const sgroup = groups.selectAll('.shape')
       .data(cellGroups)
       .join('g')
-      .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation - 90})`)
+      .attr('class', 'shape')
+      .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation})`)
+    // .attr('clip-path', `url(#clip-0-0)`)
+    // .attr('id', (d, i) => `clip-${groupidx++}-${i}`)
+
 
     let gindex = 0
+    let clipidx = 0
     sgroup.append('path')
-      .attr('d', d3.symbol().size(rad * 24).type(symbolBlade))
-      .attr('fill', (d, i) => {
+      .attr('d', d3.symbol().size(3000).type(symbolBlade))
+      .each(function (d, i) {
+        const e = d3.select(this)
         let offset = (ITEM_COUNT - 1) - (gindex + i)
         offset = offset < 0 ? ITEM_COUNT + offset : offset
 
-        const color = colorScale(offset)
+        const color = d3.color(colorScale(offset))
         if (i == ITEM_COUNT - 1) gindex++
 
-        return color
+        if (i == 0) {
+
+          // const parent = d3.select(e.node().parentNode).clone(true)
+
+          // e.attr('stroke', 'red')
+
+
+          // if (clipidx == 0) {
+          //   parent.attr('clip-path', null)
+          //   svg.select('defs').append('clipPath')
+          //     .attr('id', 'clip-0-0')
+          //     .append(() => parent.node())
+
+          //   clipidx++
+          // }
+        }
+
+        if (i == ITEM_COUNT - 1) {
+          // e.attr('clip-path', `url(#clip-0-0)`)
+        }
+
+        e.attr('fill', color)
+
+
+        if (gindex >= ITEM_COUNT) gindex = 0
+
       })
-    // .each(function (d) {
-    //   const e = d3.select(this)
-    //   const color = d3.color(shuffle.pick(d.colors))
-    //   e.attr('fill', color)
-    //     .attr('stroke', color.darker(0.2))
-    // })
-    // .attr('stroke', (d) => {
-    //   return shuffle.pick(d.colors)
-    // })
+
+    // gindex = 0
+    // sgroup.append('path')
+    //   .attr('d', d3.symbol().size(3000).type(symbolBladeHalf))
+    //   .each(function (d, i) {
+    //     const e = d3.select(this)
+    //     let offset = (ITEM_COUNT - 1) - (gindex + i)
+    //     offset = offset < 0 ? ITEM_COUNT + offset : offset
+
+    //     const color = d3.color(colorScale(offset))
+    //     if (i == ITEM_COUNT - 1) gindex++
+
+    //     e.attr('fill', color.darker(0.1))
+    //       .attr('stroke', color.brighter(0.5))
+
+    //     if (gindex >= ITEM_COUNT) gindex = 0
+
+    //   })
 
 
     if (exporting) {
