@@ -114,26 +114,18 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
     const groups = target.selectAll('.cell')
       .data(cells)
       .join('g')
+      .attr('class', 'cell')
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
+      .attr('clip-path', (d, i) => `url(#clip-${i})`)
 
-    // groups.append('rect')
-    //   .attr('width', d => d.xsize)
-    //   .attr('height', d => d.ysize)
-    //   .attr('fill', 'none')
-    //   .attr('stroke', '#eee')
-
-    let groupidx = 0
     const sgroup = groups.selectAll('.shape')
       .data(cellGroups)
       .join('g')
       .attr('class', 'shape')
       .attr('transform', d => `translate(${d.x}, ${d.y}) rotate(${d.rotation})`)
-    // .attr('clip-path', `url(#clip-0-0)`)
-    // .attr('id', (d, i) => `clip-${groupidx++}-${i}`)
 
 
     let gindex = 0
-    let clipidx = 0
     sgroup.append('path')
       .attr('d', d3.symbol().size(3000).type(symbolBlade))
       .each(function (d, i) {
@@ -142,53 +134,11 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
         offset = offset < 0 ? ITEM_COUNT + offset : offset
 
         const color = d3.color(colorScale(offset))
-        if (i == ITEM_COUNT - 1) gindex++
-
-        if (i == 0) {
-
-          // const parent = d3.select(e.node().parentNode).clone(true)
-
-          // e.attr('stroke', 'red')
-
-
-          // if (clipidx == 0) {
-          //   parent.attr('clip-path', null)
-          //   svg.select('defs').append('clipPath')
-          //     .attr('id', 'clip-0-0')
-          //     .append(() => parent.node())
-
-          //   clipidx++
-          // }
-        }
-
-        if (i == ITEM_COUNT - 1) {
-          // e.attr('clip-path', `url(#clip-0-0)`)
-        }
-
         e.attr('fill', color)
 
-
+        if (i == ITEM_COUNT - 1) gindex++
         if (gindex >= ITEM_COUNT) gindex = 0
-
       })
-
-    // gindex = 0
-    // sgroup.append('path')
-    //   .attr('d', d3.symbol().size(3000).type(symbolBladeHalf))
-    //   .each(function (d, i) {
-    //     const e = d3.select(this)
-    //     let offset = (ITEM_COUNT - 1) - (gindex + i)
-    //     offset = offset < 0 ? ITEM_COUNT + offset : offset
-
-    //     const color = d3.color(colorScale(offset))
-    //     if (i == ITEM_COUNT - 1) gindex++
-
-    //     e.attr('fill', color.darker(0.1))
-    //       .attr('stroke', color.brighter(0.5))
-
-    //     if (gindex >= ITEM_COUNT) gindex = 0
-
-    //   })
 
 
     if (exporting) {
