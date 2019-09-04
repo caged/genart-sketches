@@ -107,7 +107,6 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
 
 
     drawBleed({ svg, width, height, bwidth, bheight, bx, by })
-
     const target = svg.append('g')
       .attr('transform', `translate(${bx}, ${by})`)
 
@@ -116,7 +115,7 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
       .join('g')
       .attr('class', 'cell')
       .attr('transform', d => `translate(${d.x}, ${d.y})`)
-      .attr('clip-path', (d, i) => `url(#clip-${i})`)
+    // .attr('clip-path', (d, i) => `url(#clip-${i})`)
 
     const sgroup = groups.selectAll('.shape')
       .data(cellGroups)
@@ -129,15 +128,23 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
     sgroup.append('path')
       .attr('d', d3.symbol().size(3000).type(symbolBlade))
       .each(function (d, i) {
+
         const e = d3.select(this)
+        const cell = d3.select(this.parentNode.parentNode)
+
+        // Use an incrementing offset for each group so we can 
+        // rotate the colors to make it a little more interesting 
         let offset = (ITEM_COUNT - 1) - (gindex + i)
         offset = offset < 0 ? ITEM_COUNT + offset : offset
 
         const color = d3.color(colorScale(offset))
         e.attr('fill', color)
 
-        if (i == ITEM_COUNT - 1) gindex++
-        if (gindex >= ITEM_COUNT) gindex = 0
+        if (lastItem(i)) {
+          gindex++
+        } else if (gindex >= ITEM_COUNT) {
+          gindex = 0
+        }
       })
 
 
@@ -150,6 +157,10 @@ const sketch = ({ width, height, canvasWidth, canvasHeight, styleWidth, styleHei
       return { data, extension: '.svg' }
     }
   }
+}
+
+function lastItem(i) {
+  return i === ITEM_COUNT - 1
 }
 
 canvasSketch(sketch, settings);
