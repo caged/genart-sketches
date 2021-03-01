@@ -35,7 +35,7 @@
     "postprocessing": "^4.10.0",
     "seedrandom": "^2.4.3",
     "shuffle-array": "^1.0.1",
-    "three": "^0.95.0",
+    "three": "^0.125.0",
     "three-bas": "git+https://github.com/zadvorsky/three.bas.git",
     "three.meshline": "^1.1.0"
   }
